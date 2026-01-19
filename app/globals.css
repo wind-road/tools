@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+/* Tailwind CSS 4: 配置 dark mode 只响应 .dark class，不响应 prefers-color-scheme */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* 默认 light 主题 */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+/* 只在 html.dark 存在时应用暗色主题，不响应 prefers-color-scheme */
+html.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+html {
+  background-color: var(--background);
+}
+
+body {
+  background-color: var(--background);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  color: var(--foreground);
+}
