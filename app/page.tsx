@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { FileJson } from "lucide-react";
+import { FileJson, Route } from "lucide-react";
 
 export default function Home() {
   const tools = [
@@ -10,6 +10,12 @@ export default function Home() {
       description: "格式化、验证和美化 JSON 数据",
       href: "/tools/json-formatter",
       icon: FileJson,
+    },
+    {
+      title: "路径转换",
+      description: "将 webpack:// 格式的路径转换为普通文件路径",
+      href: "/tools/path-converter",
+      icon: Route,
     },
   ];
 
