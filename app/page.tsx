@@ -13,7 +13,7 @@ export default function Home() {
     },
     {
       title: "路径转换",
-      description: "将 webpack:// 格式的路径转换为普通文件路径",
+      description: "将 webpack:// 格式的路径转换为普通文件路径，以及将 Windows 路径（反斜杠）转换为 Unix 路径（正斜杠）。支持批量转换。",
       href: "/tools/path-converter",
       icon: Route,
     },

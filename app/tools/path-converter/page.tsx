@@ -66,6 +66,13 @@ export default function PathConverterPage() {
           }
         }
         
+        // 处理 Windows 路径格式（反斜杠转正斜杠）
+        // 例如: src\components\Back\GeneralSetting\Score\ScoreDetail.vue
+        // 转换为: src/components/Back/GeneralSetting/Score/ScoreDetail.vue
+        if (result.includes('\\')) {
+          result = result.replace(/\\/g, '/');
+        }
+        
         return result;
       });
       
@@ -141,9 +148,9 @@ export default function PathConverterPage() {
       <main className="container mx-auto px-4 py-8">
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Webpack 路径转换工具</CardTitle>
+            <CardTitle>路径转换工具</CardTitle>
             <CardDescription>
-              将 webpack:// 格式的路径转换为普通文件路径。支持批量转换。
+              支持将 webpack:// 格式的路径转换为普通文件路径，以及将 Windows 路径（反斜杠）转换为 Unix 路径（正斜杠）。支持批量转换。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -174,7 +181,7 @@ export default function PathConverterPage() {
                       setInput(e.target.value);
                       adjustTextareaHeight(e.target as HTMLTextAreaElement);
                     }}
-                    placeholder='请输入 webpack:// 格式的路径，例如: webpack://teamco/src/components/SalesCrm/CustomerMan/CustomerDetail/Contacts/Contacts.vue?7300'
+                    placeholder='支持两种格式：\n1. webpack://teamco/src/components/xxx.vue?7300\n2. src\components\Back\GeneralSetting\Score\ScoreDetail.vue'
                     className="font-mono resize-none flex-1 min-h-[400px] overflow-y-auto"
                   />
                 </div>
