@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,6 +13,28 @@ export default function JsonFormatterPage() {
   const [output, setOutput] = useState("");
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const outputRef = useRef<HTMLTextAreaElement>(null);
+
+  // 自动调整 textarea 高度
+  const adjustTextareaHeight = (textarea: HTMLTextAreaElement | null) => {
+    if (textarea) {
+      const minHeight = 400; // 最小高度 400px
+      textarea.style.height = "auto";
+      const scrollHeight = textarea.scrollHeight;
+      textarea.style.height = `${Math.max(scrollHeight, minHeight)}px`;
+    }
+  };
+
+  // 监听 input 变化
+  useEffect(() => {
+    adjustTextareaHeight(inputRef.current);
+  }, [input]);
+
+  // 监听 output 变化
+  useEffect(() => {
+    adjustTextareaHeight(outputRef.current);
+  }, [output]);
 
   const formatJson = () => {
     setError("");
@@ -115,18 +137,6 @@ export default function JsonFormatterPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-gray-900 dark:text-gray-50 mb-2 block">
-                  输入 JSON
-                </label>
-                <Textarea
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder='请输入 JSON 数据，例如: {"name":"示例","value":123}'
-                  className="min-h-[200px] font-mono"
-                />
-              </div>
-
               <div className="flex gap-2 flex-wrap">
                 <Button onClick={formatJson}>格式化</Button>
                 <Button onClick={minifyJson} variant="outline">
@@ -143,47 +153,72 @@ export default function JsonFormatterPage() {
                 </div>
               )}
 
-              {output && (
-                <div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="flex flex-col">
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-medium text-gray-900 dark:text-gray-50">
+                      输入 JSON
+                    </label>
+                  </div>
+                  <Textarea
+                    ref={inputRef}
+                    value={input}
+                    onChange={(e) => {
+                      setInput(e.target.value);
+                      adjustTextareaHeight(e.target as HTMLTextAreaElement);
+                    }}
+                    placeholder='请输入 JSON 数据，例如: {"name":"示例","value":123}'
+                    className="font-mono resize-none flex-1 min-h-[400px] overflow-y-auto"
+                  />
+                </div>
+
+                <div className="flex flex-col">
                   <div className="flex items-center justify-between mb-2">
                     <label className="text-sm font-medium text-gray-900 dark:text-gray-50">
                       输出结果
                     </label>
-                    <div className="flex gap-2">
-                      <Button
-                        onClick={copyToClipboard}
-                        variant="outline"
-                        size="sm"
-                      >
-                        {copied ? (
-                          <>
-                            <Check className="h-4 w-4 mr-1" />
-                            已复制
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="h-4 w-4 mr-1" />
-                            复制
-                          </>
-                        )}
-                      </Button>
-                      <Button
-                        onClick={downloadJson}
-                        variant="outline"
-                        size="sm"
-                      >
-                        <Download className="h-4 w-4 mr-1" />
-                        下载
-                      </Button>
-                    </div>
+                    {output && (
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={copyToClipboard}
+                          variant="outline"
+                          size="sm"
+                        >
+                          {copied ? (
+                            <>
+                              <Check className="h-4 w-4 mr-1" />
+                              已复制
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="h-4 w-4 mr-1" />
+                              复制
+                            </>
+                          )}
+                        </Button>
+                        <Button
+                          onClick={downloadJson}
+                          variant="outline"
+                          size="sm"
+                        >
+                          <Download className="h-4 w-4 mr-1" />
+                          下载
+                        </Button>
+                      </div>
+                    )}
                   </div>
                   <Textarea
+                    ref={outputRef}
                     value={output}
-                    readOnly
-                    className="min-h-[200px] font-mono bg-gray-50 dark:bg-gray-900"
+                    onChange={(e) => {
+                      setOutput(e.target.value);
+                      adjustTextareaHeight(e.target as HTMLTextAreaElement);
+                    }}
+                    placeholder="格式化后的 JSON 将显示在这里..."
+                    className="font-mono bg-gray-50 dark:bg-gray-900 resize-none flex-1 min-h-[400px] overflow-y-auto"
                   />
                 </div>
-              )}
+              </div>
             </div>
           </CardContent>
         </Card>

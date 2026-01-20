@@ -30,7 +30,7 @@ export default function Home() {
             工作台看板
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
-            选择您需要的工具开始使用
+            一切为了早点下班！！！
           </p>
         </div>
 
