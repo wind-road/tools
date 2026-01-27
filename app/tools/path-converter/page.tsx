@@ -26,6 +26,19 @@ export default function PathConverterPage() {
     }
   };
 
+  // 复制到剪贴板的函数
+  const copyToClipboard = useCallback(async (text: string) => {
+    if (!text) return;
+    
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (e) {
+      console.error("复制失败:", e);
+    }
+  }, []);
+
   // 转换路径的函数
   const convertPath = useCallback((inputText: string) => {
     setError("");
@@ -76,12 +89,18 @@ export default function PathConverterPage() {
         return result;
       });
       
-      setOutput(convertedLines.join('\n'));
+      const convertedText = convertedLines.join('\n');
+      setOutput(convertedText);
+      
+      // 自动复制到剪贴板
+      if (convertedText.trim()) {
+        copyToClipboard(convertedText);
+      }
     } catch (e) {
       setError(`转换失败: ${e instanceof Error ? e.message : "未知错误"}`);
       setOutput("");
     }
-  }, []);
+  }, [copyToClipboard]);
 
   // 监听 input 变化，自动转换
   useEffect(() => {
@@ -94,16 +113,8 @@ export default function PathConverterPage() {
     adjustTextareaHeight(outputRef.current);
   }, [output]);
 
-  const copyToClipboard = async () => {
-    if (!output) return;
-    
-    try {
-      await navigator.clipboard.writeText(output);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (e) {
-      console.error("复制失败:", e);
-    }
+  const handleManualCopy = () => {
+    copyToClipboard(output);
   };
 
   const downloadResult = () => {
@@ -194,7 +205,7 @@ export default function PathConverterPage() {
                     {output && (
                       <div className="flex gap-2">
                         <Button
-                          onClick={copyToClipboard}
+                          onClick={handleManualCopy}
                           variant="outline"
                           size="sm"
                         >
